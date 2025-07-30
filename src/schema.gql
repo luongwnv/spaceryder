@@ -1,0 +1,48 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Airport {
+  id: ID!
+  location: String!
+  latitude: Float!
+  longitude: Float!
+}
+
+type Spaceship {
+  id: String!
+  code: String!
+  name: String!
+  location: String!
+}
+
+type TripStatus {
+  id: String!
+  departureLocationCode: String!
+  destinationLocationCode: String!
+  departureAt: String!
+  arrivalAt: String!
+  spaceshipId: String!
+  status: String!
+}
+
+type Query {
+  tripStatus(tripId: String!): TripStatus!
+  airport(location: String!): [Airport!]
+  spaceships(location: String): [Spaceship!]!
+}
+
+type Mutation {
+  requestTrip(input: CreateTripInput!): String!
+  cancelTrip(tripId: String!): String!
+}
+
+input CreateTripInput {
+  departureLocationCode: String!
+  destinationLocationCode: String!
+  departureAt: String!
+}
+
+type Subscription {
+  tripStatusUpdated: TripStatus!
+}
