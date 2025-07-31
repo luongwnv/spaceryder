@@ -9,7 +9,7 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 import WebSocket from 'ws';
 import { AppModule } from '../app.module';
-import { Trip } from '../app/trip/trip.entity';
+import { Trip, TripStatus } from '../app/trip/trip.entity';
 
 describe('App (e2e)', () => {
   let app: INestApplication;
@@ -96,7 +96,7 @@ describe('App (e2e)', () => {
       // Wait for job to be processed
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const trip = await tripRepository.findOne({ where: { status: 'SCHEDULED' } });
+      const trip = await tripRepository.findOne({ where: { status: TripStatus.SCHEDULED  } });
       if (!trip) {
         throw new Error('Trip not found');
       }
@@ -124,7 +124,7 @@ describe('App (e2e)', () => {
 
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const trip = await tripRepository.findOne({ where: { status: 'SCHEDULED' } });
+      const trip = await tripRepository.findOne({ where: { status: TripStatus.SCHEDULED } });
       if (!trip) {
         throw new Error('Trip not found');
       }
@@ -173,7 +173,7 @@ describe('App (e2e)', () => {
 
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const trip = await tripRepository.findOne({ where: { status: 'SCHEDULED' } });
+      const trip = await tripRepository.findOne({ where: { status: TripStatus.SCHEDULED } });
       if (!trip) {
         throw new Error('Trip not found');
       }

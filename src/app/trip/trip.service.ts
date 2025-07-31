@@ -2,11 +2,11 @@ import { BadRequestException, Injectable, Logger, NotFoundException } from '@nes
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4, validate } from 'uuid';
-import { TripRequestInput, TripStatus } from '../../common/interfaces/trip.interface';
 import { DistanceUtil } from '../../common/utils/distance.util';
 import { AirportService } from '../airport/airport.service';
 import { SpaceshipService } from '../spaceship/spaceship.service';
 import { CreateTripInput } from './dto/create-trip.input';
+import { TripRequestInput, TripStatus } from './interface/trip.interface';
 import { TripQueueService } from './queue/trip-queue.service';
 import { Trip } from './trip.entity';
 import { TripGateway } from './trip.gateway';
@@ -69,7 +69,7 @@ export class TripService {
             departureAt: new Date(data.departureAt!),
             arrivalAt,
             spaceshipId: spaceship.id,
-            status: 'SCHEDULED',
+            status: 'SCHEDULED' as Trip['status'],
         });
         const savedTrip = await this.tripRepository.save(trip);
         this.logger.log(`Trip saved: ${JSON.stringify(savedTrip)}`);
@@ -81,7 +81,7 @@ export class TripService {
         return 2500;
     }
 
-    async requestTrip(input: CreateTripInput): Promise<TripStatus> {
+    async requestTrip(input: CreateTripInput): Promise<Trip> {
         if (!input.departureLocationCode || !input.destinationLocationCode) {
             throw new NotFoundException('Invalid departure or destination airport');
         }
@@ -115,14 +115,14 @@ export class TripService {
         const arrivalAt = new Date(new Date(input.departureAt!).getTime() + travelTimeMs);
 
         const trip = this.tripRepository.create({
-            id: uuidv4(),
             departureLocationCode: input.departureLocationCode,
             destinationLocationCode: input.destinationLocationCode,
             departureAt: new Date(input.departureAt!),
             arrivalAt,
             spaceshipId: spaceship.id,
-            status: 'SCHEDULED',
         });
+        trip.id = uuidv4();
+        trip.status = 'SCHEDULED' as any;
 
         const savedTrip = await this.tripRepository.save(trip);
         if (!input.destinationLocationCode) {
@@ -132,9 +132,9 @@ export class TripService {
             throw new NotFoundException('Invalid destination airport');
         }
         await this.spaceshipService.updateLocation(spaceship.id, input.destinationLocationCode!);
-        this.tripGateway.notifyTripStatus(savedTrip as Trip);
+        this.tripGateway.notifyTripStatus(savedTrip);
 
-        return { ...savedTrip, status: savedTrip.status as TripStatus['status'] };
+        return savedTrip;
     }
 
     async requestTripAsync(input: CreateTripInput): Promise<string> {
@@ -150,48 +150,54 @@ export class TripService {
         });
     }
 
-    async cancelTrip(id: string): Promise<TripStatus> {
+    async cancelTrip(id: string): Promise<Trip> {
         const trip = await this.tripRepository.findOne({ where: { id } });
         if (!trip) {
             throw new NotFoundException('Trip not found');
         }
-        trip.status = 'CANCELLED';
+        trip.status = 'CANCELLED' as Trip['status'];
         const updatedTrip = await this.tripRepository.save(trip);
         this.tripGateway.notifyTripStatus(updatedTrip);
-        return { ...updatedTrip, status: 'CANCELLED' as TripStatus['status'] };
+        return { ...updatedTrip, status: 'CANCELLED' as Trip['status'] };
     }
 
     async cancelTripAsync(id: string): Promise<string> {
         return this.tripQueueService.addCancelTripJob(id);
     }
 
-    async getTripStatus(id: string): Promise<TripStatus> {
+    async getTripStatus(id: string): Promise<Trip> {
         const trip = await this.tripRepository.findOne({ where: { id } });
         if (!trip) {
             throw new NotFoundException('Trip not found');
         }
-        return { ...trip, status: trip.status as TripStatus['status'] };
+        return { ...trip, status: trip.status as Trip['status'] };
     }
 
     async getAllTrips(
         page: number = 1,
-        limit: number = 10
+        limit: number = 10,
+        filters: { status?: TripStatus; departureLocationCode?: string } = {}
     ): Promise<{ trips: Trip[]; total: number; page: number; limit: number }> {
-        this.logger.log(`Fetching trips with page=${page}, limit=${limit}`);
+        this.logger.log(
+            `Fetching trips with page=${page}, limit=${limit}, filters=${JSON.stringify(filters)}`
+        );
 
-        const skip = (page - 1) * limit;
-        const [trips, total] = await this.tripRepository.findAndCount({
-            skip,
-            take: limit,
-            order: { departureAt: 'DESC' },
-        });
+        const query = this.tripRepository.createQueryBuilder('trip');
+        if (filters.status) {
+            query.andWhere('trip.status = :status', { status: filters.status });
+        }
+        if (filters.departureLocationCode) {
+            query.andWhere('trip.departureLocationCode = :departureLocationCode', {
+                departureLocationCode: filters.departureLocationCode,
+            });
+        }
+        const [trips, total] = await query
+            .skip((page - 1) * limit)
+            .take(limit)
+            .orderBy('trip.departureAt', 'DESC')
+            .getManyAndCount();
 
         this.logger.log(`Fetched ${trips.length} trips, total: ${total}`);
-        return {
-            trips,
-            total,
-            page,
-            limit,
-        };
+        return { trips, total, page, limit };
     }
 }

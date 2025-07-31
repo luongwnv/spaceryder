@@ -1,7 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Inject, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { TripRequestInput } from '../../../common/interfaces/trip.interface';
+import { TripRequestInput } from '../interface/trip.interface';
 import { TripService } from '../trip.service';
 
 @Processor('trip-queue', {

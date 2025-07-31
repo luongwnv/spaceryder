@@ -2,7 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateTripInput } from '../../app/trip/dto/create-trip.input';
 import { TripController } from '../../app/trip/trip.controller';
-import { Trip } from '../../app/trip/trip.entity';
+import { Trip, TripStatus } from '../../app/trip/trip.entity';
 import { TripService } from '../../app/trip/trip.service';
 
 describe('TripController', () => {
@@ -44,7 +44,7 @@ describe('TripController', () => {
                 departureAt: new Date('2025-01-01T00:00:00Z'),
                 arrivalAt: new Date('2025-01-01T02:27:51Z'),
                 spaceshipId: 'SS-001',
-                status: 'SCHEDULED',
+                status: TripStatus.SCHEDULED,
             };
             mockTripService.requestTrip.mockResolvedValue(trip);
 
@@ -65,7 +65,7 @@ describe('TripController', () => {
                 departureAt: new Date('2025-01-01T00:00:00Z'),
                 arrivalAt: new Date('2025-01-01T02:27:51Z'),
                 spaceshipId: 'SS-001',
-                status: 'CANCELLED',
+                status: TripStatus.CANCELLED,
             };
             mockTripService.cancelTrip.mockResolvedValue(trip);
 
@@ -92,7 +92,7 @@ describe('TripController', () => {
                 departureAt: new Date('2025-01-01T00:00:00Z'),
                 arrivalAt: new Date('2025-01-01T02:27:51Z'),
                 spaceshipId: 'SS-001',
-                status: 'SCHEDULED',
+                status: TripStatus.SCHEDULED,
             };
             mockTripService.getTripStatus.mockResolvedValue(trip);
 

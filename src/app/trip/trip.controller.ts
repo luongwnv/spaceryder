@@ -11,8 +11,8 @@ import {
     Query,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { TripStatus } from '../../common/interfaces/trip.interface';
 import { CreateTripInput } from './dto/create-trip.input';
+import { Trip } from './trip.entity';
 import { TripService } from './trip.service';
 
 @ApiTags('Trips')
@@ -58,9 +58,9 @@ export class TripController {
     @Get(':tripId')
     @ApiOperation({ summary: 'Get trip status' })
     @ApiParam({ name: 'tripId', description: 'Unique ID of the trip' })
-    @ApiResponse({ status: 200, description: 'Trip status details', type: TripStatus })
+    @ApiResponse({ status: 200, description: 'Trip status details', type: Trip })
     @ApiResponse({ status: 404, description: 'Trip not found' })
-    async getTripStatus(@Param('tripId') tripId: string): Promise<TripStatus> {
+    async getTripStatus(@Param('tripId') tripId: string): Promise<Trip> {
         return this.tripService.getTripStatus(tripId);
     }
 }

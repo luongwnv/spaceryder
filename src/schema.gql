@@ -16,33 +16,55 @@ type Spaceship {
   location: String!
 }
 
-type TripStatus {
+type TripResponse {
+  message: String!
+  jobId: String
+  statusCode: Int!
+}
+
+type PaginatedTrips {
+  trips: [Trip!]!
+  total: Int!
+  page: Int!
+  limit: Int!
+}
+
+type Trip {
   id: String!
   departureLocationCode: String!
   destinationLocationCode: String!
-  departureAt: String!
-  arrivalAt: String!
+  departureAt: DateTime!
+  arrivalAt: DateTime!
   spaceshipId: String!
-  status: String!
+  status: TripStatus!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum TripStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
 
 type Query {
-  tripStatus(tripId: String!): TripStatus!
+  getTripStatus(tripId: String!): Trip!
+  getAllTrips(page: Int! = 1, limit: Int! = 10): PaginatedTrips!
   airport(location: String!): [Airport!]
   spaceships(location: String): [Spaceship!]!
 }
 
 type Mutation {
-  requestTrip(input: CreateTripInput!): String!
-  cancelTrip(tripId: String!): String!
+  requestTrip(input: TripRequestInput!): TripResponse!
+  cancelTrip(tripId: String!): TripResponse!
 }
 
-input CreateTripInput {
+input TripRequestInput {
   departureLocationCode: String!
   destinationLocationCode: String!
   departureAt: String!
-}
-
-type Subscription {
-  tripStatusUpdated: TripStatus!
 }
