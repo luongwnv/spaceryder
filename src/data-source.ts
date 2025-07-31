@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
-import { Airport } from './airport/airport.entity';
-import { Spaceship } from './spaceship/spaceship.entity';
-import { Trip } from './trip/trip.entity';
+import { Airport } from './app/airport/airport.entity';
+import { Spaceship } from './app/spaceship/spaceship.entity';
+import { Trip } from './app/trip/trip.entity';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',

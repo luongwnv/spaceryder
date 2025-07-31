@@ -14,7 +14,7 @@ import { TripQueueService } from './trip-queue.service';
             name: 'trip-queue',
             defaultJobOptions: {
                 attempts: 3,
-                backoff: { type: 'exponential', delay: 1000 },
+                backoff: { type: 'exponential', delay: 500 },
             },
         }),
         TypeOrmModule.forFeature([Trip]),

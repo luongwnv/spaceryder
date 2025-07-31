@@ -9,7 +9,7 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 import WebSocket from 'ws';
 import { AppModule } from '../app.module';
-import { Trip } from '../trip/trip.entity';
+import { Trip } from '../app/trip/trip.entity';
 
 describe('App (e2e)', () => {
   let app: INestApplication;

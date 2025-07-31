@@ -2,7 +2,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import { validate } from 'class-validator';
-import { TripRequestInput } from '../../common/interfaces/trip.interface';
+import { TripRequestInput } from '../../../common/interfaces/trip.interface';
 
 @Injectable()
 export class TripQueueService {
@@ -13,7 +13,6 @@ export class TripQueueService {
     async addRequestTripJob(data: TripRequestInput): Promise<string> {
         const input = new TripRequestInput();
         Object.assign(input, data);
-        console.log('Adding trip request job with input:', input);
         const errors = await validate(input);
         if (errors.length > 0) {
             this.logger.error(`Validation failed for trip request: ${JSON.stringify(errors)}`);
@@ -25,7 +24,7 @@ export class TripQueueService {
             const job = await this.tripQueue.add('request-trip', data, {
                 jobId: `request-trip-${data.departureLocationCode}-${data.destinationLocationCode}-${data.departureAt}`,
                 attempts: 3,
-                backoff: { type: 'exponential', delay: 1000 },
+                backoff: { type: 'exponential', delay: 500 },
             });
             this.logger.log(`Job added successfully: ${job.id}`);
             return (
@@ -51,7 +50,7 @@ export class TripQueueService {
                 {
                     jobId: `cancel-trip-${tripId}`,
                     attempts: 3,
-                    backoff: { type: 'exponential', delay: 1000 },
+                    backoff: { type: 'exponential', delay: 500 },
                 }
             );
             this.logger.log(`Cancel job added successfully: ${job.id}`);

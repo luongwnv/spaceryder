@@ -9,13 +9,13 @@ import { Queue } from 'bullmq';
 import { join } from 'path';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { envConfig } from '../config/env.config';
-import { AirportModule } from './airport/airport.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { BullBoardModule } from './bull-board.module';
-import { SpaceshipModule } from './spaceship/spaceship.module';
-import { TripQueueModule } from './trip/queue/trip-queue.module';
-import { TripModule } from './trip/trip.module';
+import { AirportModule } from './app/airport/airport.module';
+import { SpaceshipModule } from './app/spaceship/spaceship.module';
+import { TripQueueModule } from './app/trip/queue/trip-queue.module';
+import { TripModule } from './app/trip/trip.module';
+import { BullBoardModule } from './bull/bull-board.module';
 
 @Module({
     imports: [
@@ -57,7 +57,7 @@ import { TripModule } from './trip/trip.module';
             name: 'trip-queue',
             defaultJobOptions: {
                 attempts: 3,
-                backoff: { type: 'exponential', delay: 1000 },
+                backoff: { type: 'exponential', delay: 500 },
             },
         }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -72,7 +72,7 @@ import { TripModule } from './trip/trip.module';
         AirportModule,
         SpaceshipModule,
         TripQueueModule,
-        // BullBoardModule,
+        BullBoardModule,
     ],
     controllers: [AppController],
     providers: [
@@ -111,8 +111,8 @@ export class AppModule {
         SwaggerModule.setup('api/docs', app, document);
     }
 
-    // static setupBullBoard(app: any) {
-    //   const serverAdapter = app.get(BullBoardModule).serverAdapter;
-    //   app.use('/admin/queues', serverAdapter.getRouter());
-    // }
+    static setupBullBoard(app: any) {
+        const serverAdapter = app.get('BullBoardAdapter');
+        app.use('/admin/queues', serverAdapter.getRouter());
+    }
 }

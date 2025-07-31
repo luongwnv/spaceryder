@@ -1,9 +1,9 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateTripInput } from '../../trip/dto/create-trip.input';
-import { TripController } from '../../trip/trip.controller';
-import { Trip } from '../../trip/trip.entity';
-import { TripService } from '../../trip/trip.service';
+import { CreateTripInput } from '../../app/trip/dto/create-trip.input';
+import { TripController } from '../../app/trip/trip.controller';
+import { Trip } from '../../app/trip/trip.entity';
+import { TripService } from '../../app/trip/trip.service';
 
 describe('TripController', () => {
     let tripController: TripController;

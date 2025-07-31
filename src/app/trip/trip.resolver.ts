@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { TripStatus } from '../common/interfaces/trip.interface';
+import { TripStatus } from '../../common/interfaces/trip.interface';
 import { CreateTripInput } from './dto/create-trip.input';
 import { TripService } from './trip.service';
 

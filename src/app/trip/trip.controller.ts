@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { TripStatus } from '../common/interfaces/trip.interface';
+import { TripStatus } from '../../common/interfaces/trip.interface';
 import { CreateTripInput } from './dto/create-trip.input';
 import { TripService } from './trip.service';
 

@@ -5,9 +5,6 @@ import { Airport } from './airport.entity';
 
 @Injectable()
 export class AirportService {
-    findByCode(departureLocationCode: string) {
-        throw new Error('Method not implemented.');
-    }
     constructor(
         @InjectRepository(Airport)
         private airportRepository: Repository<Airport>

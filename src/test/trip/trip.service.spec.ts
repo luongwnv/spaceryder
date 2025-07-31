@@ -2,12 +2,12 @@ import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AirportService } from '../../airport/airport.service';
+import { AirportService } from '../../app/airport/airport.service';
+import { SpaceshipService } from '../../app/spaceship/spaceship.service';
+import { Trip } from '../../app/trip/trip.entity';
+import { TripGateway } from '../../app/trip/trip.gateway';
+import { TripService } from '../../app/trip/trip.service';
 import { DistanceUtil } from '../../common/utils/distance.util';
-import { SpaceshipService } from '../../spaceship/spaceship.service';
-import { Trip } from '../../trip/trip.entity';
-import { TripGateway } from '../../trip/trip.gateway';
-import { TripService } from '../../trip/trip.service';
 
 describe('TripService', () => {
     let tripService: TripService;
