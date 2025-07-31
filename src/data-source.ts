@@ -9,7 +9,7 @@ export const AppDataSource = new DataSource({
     port: parseInt(process.env.DB_PORT || '5432'),
     username: process.env.DB_USERNAME || 'user123',
     password: process.env.DB_PASSWORD || 'password123',
-    database: process.env.DB_NAME || 'spacerryder',
+    database: process.env.DB_NAME || 'spaceryder',
     entities: [Spaceship, Airport, Trip],
     migrations: ['src/database/migrations/*.ts'],
 });

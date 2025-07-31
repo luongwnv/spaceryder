@@ -1,5 +1,5 @@
 {
-    "name": "spacerryder",
+    "name": "spaceryder",
     "version": "1.0.0",
     "description": "SpaceRyder backend for space travel booking",
     "main": "dist/main.js",

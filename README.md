@@ -44,7 +44,7 @@ SpaceRyder is a backend application for intercity space travel booking, built wi
    DB_PORT=5432
    DB_USERNAME=user123
    DB_PASSWORD=password123
-   DB_NAME=spacerryder
+   DB_NAME=spaceryder
    REDIS_HOST=localhost
    REDIS_PORT=6379
 ```
@@ -275,16 +275,16 @@ Use tools like Postman or `curl` to test REST endpoints.
 1. **Check PostgreSQL** :
 
 ```bash
-   docker exec -it spacerryder_postgres psql -U user123 -d spacerryder -c "SELECT * FROM trip;"
-   docker exec -it spacerryder_postgres psql -U user123 -d spacerryder -c "SELECT * FROM airport;"
-   docker exec -it spacerryder_postgres psql -U user123 -d spacerryder -c "SELECT * FROM spaceship;"
+   docker exec -it spaceryder_postgres psql -U user123 -d spaceryder -c "SELECT * FROM trip;"
+   docker exec -it spaceryder_postgres psql -U user123 -d spaceryder -c "SELECT * FROM airport;"
+   docker exec -it spaceryder_postgres psql -U user123 -d spaceryder -c "SELECT * FROM spaceship;"
 ```
 
 2. **Check Redis** :
 
 ```bash
    redis-cli -h localhost -p 6379 ping
-   docker logs spacerryder_redis
+   docker logs spaceryder_redis
 ```
 
 3. **Monitor BullMQ Jobs** :
@@ -304,7 +304,7 @@ Use tools like Postman or `curl` to test REST endpoints.
 * Monitor job statuses in Bull Board (`http://localhost:3000/admin/queues`).
 * **Database issues** :
 * Verify PostgreSQL connection in `.env`.
-* Check table schema: `docker exec -it spacerryder_postgres psql -U user123 -d spacerryder -c "\d trip"`.
+* Check table schema: `docker exec -it spaceryder_postgres psql -U user123 -d spaceryder -c "\d trip"`.
 
 ## Development
 
@@ -330,7 +330,7 @@ Use tools like Postman or `curl` to test REST endpoints.
 ## Directory Structure
 
 ```
-spacerryder/
+spaceryder/
 ├── config/
 │   └── env.config.ts              # Environment configuration
 ├── docker-compose.yml             # Docker setup for PostgreSQL and Redis

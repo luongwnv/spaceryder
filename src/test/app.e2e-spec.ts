@@ -22,7 +22,7 @@ describe('App (e2e)', () => {
     const dbPort = process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432;
     const dbUsername = process.env.DB_USERNAME ?? 'user123';
     const dbPassword = process.env.DB_PASSWORD ?? 'password123';
-    const dbName = process.env.DB_NAME ?? 'spacerryder_test';
+    const dbName = process.env.DB_NAME ?? 'spaceryder_test';
     const redisHost = process.env.REDIS_HOST ?? 'localhost';
     const redisPort = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379;
 
