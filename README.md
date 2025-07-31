@@ -26,24 +26,17 @@ SpaceRyder is a backend application for intercity space travel booking, built wi
 
 * **Node.js** : v18 or higher.
 * **Docker** : For running PostgreSQL and Redis containers.
-* **npm** : v9 or higher.
+* **yarn** : v1 or higher.
 
 ## Installation
-
-1. **Clone the repository** :
-
-```bash
-   git clone <repository-url>
-   cd spacerryder
-```
 
 1. **Install dependencies** :
 
 ```bash
-   npm install
+   yarn install
 ```
 
-1. **Set up environment variables** :
+2. **Set up environment variables** :
    Create a `.env` file in the root directory based on `.env.example`:
 
 ```env
@@ -56,17 +49,17 @@ SpaceRyder is a backend application for intercity space travel booking, built wi
    REDIS_PORT=6379
 ```
 
-1. **Run Docker containers** :
+3. **Run Docker containers** :
    Start PostgreSQL and Redis using Docker Compose:
 
 ```bash
    docker-compose up -d
 ```
 
-1. **Run database migrations** :
+4. **Run database migrations** :
 
 ```bash
-   npm run migration:run
+   yarn migration:run
 ```
 
 ## Running the Application
@@ -74,17 +67,17 @@ SpaceRyder is a backend application for intercity space travel booking, built wi
 1. **Start in development mode** :
 
 ```bash
-   npm run start:dev
+   yarn start:dev
 ```
 
-1. **Verify services** :
+2. **Verify services** :
 
 * **GraphQL Playground** : `http://localhost:3000/graphql`
 * **Swagger API Docs** : `http://localhost:3000/api/docs`
 * **Bull Board** : `http://localhost:3000/admin/queues`
 * **WebSocket Test Page** : `http://localhost:3000/test-websocket.html`
 
-1. **Check logs** :
+3. **Check logs** :
    Ensure the following logs appear:
 
 ```
@@ -117,7 +110,7 @@ Access **GraphQL Playground** at `http://localhost:3000/graphql` to test queries
    }
 ```
 
-1. **Get All Trips (with Pagination)** :
+2. **Get All Trips (with Pagination)** :
 
 ```graphql
    query {
@@ -138,7 +131,7 @@ Access **GraphQL Playground** at `http://localhost:3000/graphql` to test queries
    }
 ```
 
-1. **Get Trip Status** :
+3. **Get Trip Status** :
 
 ```graphql
    query {
@@ -154,7 +147,7 @@ Access **GraphQL Playground** at `http://localhost:3000/graphql` to test queries
    }
 ```
 
-1. **Cancel a Trip** :
+4. **Cancel a Trip** :
 
 ```graphql
    mutation {
@@ -257,7 +250,7 @@ Use tools like Postman or `curl` to test REST endpoints.
    curl "http://localhost:3000/trips?page=1&limit=10"
 ```
 
-1. **Request a Trip** :
+2. **Request a Trip** :
 
 ```bash
    curl -X POST http://localhost:3000/trips \
@@ -265,13 +258,13 @@ Use tools like Postman or `curl` to test REST endpoints.
      -d '{"departureLocationCode":"JFK","destinationLocationCode":"LAX","departureAt":"2025-01-01T00:00:00Z"}'
 ```
 
-1. **Get Trip Status** :
+3. **Get Trip Status** :
 
 ```bash
    curl http://localhost:3000/trips/uuid-123
 ```
 
-1. **Cancel a Trip** :
+4. **Cancel a Trip** :
 
 ```bash
    curl -X POST http://localhost:3000/trips/646493af-230a-4164-a9ac-aec87bc647a1
@@ -287,14 +280,14 @@ Use tools like Postman or `curl` to test REST endpoints.
    docker exec -it spacerryder_postgres psql -U user123 -d spacerryder -c "SELECT * FROM spaceship;"
 ```
 
-1. **Check Redis** :
+2. **Check Redis** :
 
 ```bash
    redis-cli -h localhost -p 6379 ping
    docker logs spacerryder_redis
 ```
 
-1. **Monitor BullMQ Jobs** :
+3. **Monitor BullMQ Jobs** :
    Access Bull Board at `http://localhost:3000/admin/queues` to view job statuses (`request-trip`, `cancel-trip`).
 
 ## Troubleshooting
@@ -305,7 +298,7 @@ Use tools like Postman or `curl` to test REST endpoints.
 * Verify `main.ts` includes `app.use(express.json())`.
 * **EntityMetadataNotFoundError** :
 * Ensure `trip.entity.ts` is in `src/trip` and included in `TypeOrmModule` (`entities: [join(__dirname, '**', '*.entity{.ts,.js}')]`).
-* Run migrations: `npm run migration:run`.
+* Run migrations: `yarn migration:run`.
 * **Job queue issues** :
 * Check Redis connection: `redis-cli -h localhost -p 6379 ping`.
 * Monitor job statuses in Bull Board (`http://localhost:3000/admin/queues`).
@@ -318,20 +311,20 @@ Use tools like Postman or `curl` to test REST endpoints.
 * **Build** :
 
 ```bash
-  npm run build
+  yarn build
 ```
 
 * **Run tests** :
 
 ```bash
-  npm run test
-  npm run test:e2e
+  yarn test
+  yarn test:e2e
 ```
 
 * **Generate migrations** :
 
 ```bash
-  npm run typeorm migration:generate -- -d src/data-source.ts -n <MigrationName>
+  yarn typeorm migration:generate -- -d src/data-source.ts -n <MigrationName>
 ```
 
 ## Directory Structure
@@ -342,16 +335,12 @@ spacerryder/
 │   └── env.config.ts              # Environment configuration
 ├── docker-compose.yml             # Docker setup for PostgreSQL and Redis
 ├── .env                           # Environment variables
-├── .env.example                   # Example environment variables
-├── .eslintrc.js                   # ESLint configuration
 ├── .prettierrc                    # Prettier configuration
 ├── package.json                   # Dependencies and scripts
 ├── tsconfig.json                  # TypeScript configuration
-├── tsconfig.build.json            # TypeScript build configuration
 ├── README.md                      # Project documentation
 ├── test/
 │   ├── app.e2e-spec.ts            # E2E tests for main app
-│   ├── jest-e2e.json              # Jest E2E configuration
 │   └── trip/
 │       ├── trip.controller.spec.ts # Trip controller tests
 │       └── trip.service.spec.ts   # Trip service tests
@@ -368,22 +357,21 @@ spacerryder/
     │   │   ├── airport.entity.ts  # Airport entity
     │   │   ├── airport.module.ts  # Airport module
     │   │   ├── airport.resolver.ts # GraphQL resolver
-    │   │   ├── airport.service.ts # Airport service
-    │   │   └── dto/               # Data Transfer Objects
+    │   │   └── airport.service.ts # Airport service
     │   ├── spaceship/
     │   │   ├── spaceship.entity.ts # Spaceship entity
     │   │   ├── spaceship.module.ts # Spaceship module
     │   │   ├── spaceship.resolver.ts # GraphQL resolver
-    │   │   ├── spaceship.service.ts # Spaceship service
-    │   │   └── dto/               # Data Transfer Objects
+    │   │   └── spaceship.service.ts # Spaceship service
     │   └── trip/
     │       ├── dto/               # Trip DTOs
-    │       ├── entities/          # Trip entities
+    │       ├── interface/         # Trip Interface
     │       ├── queue/             # BullMQ integration
     │       │   ├── trip-queue.module.ts # Queue module
     │       │   ├── trip-queue.processor.ts # Queue processor
     │       │   └── trip-queue.service.ts # Queue service
     │       ├── trip.controller.ts # RESTful controller
+    │       ├── trip.entity.ts     # Trip entity
     │       ├── trip.module.ts     # Trip module
     │       ├── trip.resolver.ts   # GraphQL resolver
     │       ├── trip.service.ts    # Trip service
@@ -391,15 +379,9 @@ spacerryder/
     ├── bull/
     │   └── bull-board.module.ts   # Bull Board for queue monitoring
     ├── common/
-    │   ├── constants/             # Application constants
-    │   ├── decorators/            # Custom decorators
-    │   ├── dto/                   # Common DTOs
-    │   ├── filters/               # Exception filters
-    │   ├── interfaces/            # Interfaces and types
     │   └── utils/                 # Utility functions
     └── database/
-        ├── migrations/            # TypeORM migrations
-        └── seeds/                 # Database seed data
+        └── migrations/            # TypeORM migrations
 ```
 
 ## License
