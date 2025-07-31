@@ -172,4 +172,26 @@ export class TripService {
         }
         return { ...trip, status: trip.status as TripStatus['status'] };
     }
+
+    async getAllTrips(
+        page: number = 1,
+        limit: number = 10
+    ): Promise<{ trips: Trip[]; total: number; page: number; limit: number }> {
+        this.logger.log(`Fetching trips with page=${page}, limit=${limit}`);
+
+        const skip = (page - 1) * limit;
+        const [trips, total] = await this.tripRepository.findAndCount({
+            skip,
+            take: limit,
+            order: { departureAt: 'DESC' },
+        });
+
+        this.logger.log(`Fetched ${trips.length} trips, total: ${total}`);
+        return {
+            trips,
+            total,
+            page,
+            limit,
+        };
+    }
 }

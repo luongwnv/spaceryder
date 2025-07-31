@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    Logger,
+    Param,
+    Post,
+    Query,
+} from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TripStatus } from '../../common/interfaces/trip.interface';
 import { CreateTripInput } from './dto/create-trip.input';
@@ -7,7 +18,23 @@ import { TripService } from './trip.service';
 @ApiTags('Trips')
 @Controller('trips')
 export class TripController {
+    private readonly logger = new Logger(TripController.name);
+    
     constructor(private readonly tripService: TripService) {}
+
+    @Get()
+    async getAllTrips(@Query('page') page: string = '1', @Query('limit') limit: string = '10') {
+        this.logger.log(`Received get all trips request: page=${page}, limit=${limit}`);
+        const pageNum = parseInt(page, 10) || 1;
+        const limitNum = parseInt(limit, 10) || 10;
+
+        if (pageNum < 1 || limitNum < 1) {
+            this.logger.error(`Invalid pagination params: page=${pageNum}, limit=${limitNum}`);
+            throw new BadRequestException('Page and limit must be positive integers');
+        }
+
+        return this.tripService.getAllTrips(pageNum, limitNum);
+    }
 
     @Post()
     @ApiOperation({ summary: 'Request a new trip' })

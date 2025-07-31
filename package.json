@@ -3,6 +3,8 @@
     "version": "1.0.0",
     "description": "SpaceRyder backend for space travel booking",
     "main": "dist/main.js",
+    "author": "Luong Nguyen <nguyenvanluong1511@gmail.com>",
+    "license": "MIT",
     "scripts": {
         "start": "nest start",
         "start:dev": "nest start --watch",

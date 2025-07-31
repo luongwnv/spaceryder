@@ -10,7 +10,7 @@ export class TripQueueService {
 
     constructor(@InjectQueue('trip-queue') private readonly tripQueue: Queue) {}
 
-    async addRequestTripJob(data: TripRequestInput): Promise<string> {
+    async addRequestTripJob(data: TripRequestInput): Promise<any> {
         const input = new TripRequestInput();
         Object.assign(input, data);
         const errors = await validate(input);
@@ -27,10 +27,15 @@ export class TripQueueService {
                 backoff: { type: 'exponential', delay: 500 },
             });
             this.logger.log(`Job added successfully: ${job.id}`);
-            return (
-                job.id ??
-                `request-trip-${data.departureLocationCode}-${data.destinationLocationCode}-${data.departureAt}`
-            );
+            return {
+                statusCode: 200,
+                message: 'Trip request added successfully',
+                data: {
+                    jobId:
+                        job.id ??
+                        `request-trip-${data.departureLocationCode}-${data.destinationLocationCode}-${data.departureAt}`,
+                },
+            };
         } catch (error) {
             this.logger.error(
                 `Failed to add trip request job: ${
@@ -41,7 +46,7 @@ export class TripQueueService {
         }
     }
 
-    async addCancelTripJob(tripId: string): Promise<string> {
+    async addCancelTripJob(tripId: string): Promise<any> {
         try {
             this.logger.log(`Adding cancel trip job for tripId: ${tripId}`);
             const job = await this.tripQueue.add(
@@ -54,7 +59,13 @@ export class TripQueueService {
                 }
             );
             this.logger.log(`Cancel job added successfully: ${job.id}`);
-            return job.id ?? `cancel-trip-${tripId}`;
+            return {
+                statusCode: 200,
+                message: 'Cancel trip request added successfully',
+                data: {
+                    jobId: job.id,
+                },
+            };
         } catch (error) {
             this.logger.error(
                 `Failed to add cancel trip job: ${
