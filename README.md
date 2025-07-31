@@ -389,3 +389,79 @@ spacerryder/
 MIT License
 
 For questions, contact via email: `nguyenvanluong1511@gmail.com`.
+
+## Testing with Postman
+
+SpaceRyder includes a Postman collection (`spaceryder.postman_collection.json`) for easy API testing.
+
+### Import Postman Collection
+
+1. **Open Postman** and click **Import** in the top left corner
+2. **Select File** and choose `spaceryder.postman_collection.json` from the project root
+3. **Click Import** to add the collection to your workspace
+
+### Set Up Environment Variables
+
+1. **Create a new Environment** in Postman named "SpaceRyder Local"
+2. **Add variables**:
+   - `baseUrl`: `http://localhost:3000`
+   - `tripId`: (will be set automatically from responses)
+
+### Available Endpoints in Collection
+
+The collection includes the following requests organized by folders:
+
+#### **Trip Management**
+- **GET All Trips** - Retrieve paginated trips (`/trips?page=1&limit=10`)
+- **POST Request Trip** - Create a new trip request (`/trips`)
+- **GET Trip Status** - Get specific trip details (`/trips/:tripId`)
+- **POST Cancel Trip** - Cancel an existing trip (`/trips/:tripId/cancel`)
+
+#### **GraphQL**
+- **GraphQL Queries** - Test GraphQL endpoint (`/graphql`)
+- **Request Trip Mutation** - Create trip via GraphQL
+- **Get All Trips Query** - Retrieve trips via GraphQL
+- **Cancel Trip Mutation** - Cancel trip via GraphQL
+
+### Using the Collection
+
+1. **Start the application**:
+   ```bash
+   yarn start:dev
+   ```
+
+2. **Select the SpaceRyder Local environment** in Postman
+
+3. **Run requests in order**:
+   - First, use **POST Request Trip** to create a new trip
+   - Copy the `tripId` from the response and set it in your environment variables
+   - Use **GET Trip Status** to check the trip details
+   - Use **POST Cancel Trip** to cancel the trip if needed
+
+### Example Request Bodies
+
+The collection includes pre-configured request bodies:
+
+**Request Trip**:
+```json
+{
+  "departureLocationCode": "JFK",
+  "destinationLocationCode": "LAX",
+  "departureAt": "2025-01-01T00:00:00.000Z"
+}
+```
+
+**GraphQL Request Trip**:
+```json
+{
+  "query": "mutation { requestTrip(input: { departureLocationCode: \"JFK\", destinationLocationCode: \"LAX\", departureAt: \"2025-01-01T00:00:00.000Z\" }) { message jobId statusCode } }"
+}
+```
+
+### Testing Flow
+
+1. **Request a Trip** → Get `jobId` and wait for processing
+2. **Get All Trips** → Find your trip in the list
+3. **Get Trip Status** → Check individual trip details
+4. **Cancel Trip** → Cancel if needed
+5. **Monitor in Bull Board** → Check job processing at `http://localhost:3000/admin/queues`

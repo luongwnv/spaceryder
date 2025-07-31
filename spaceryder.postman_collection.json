@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "49f5334d-e86a-44eb-90d5-2eaf447d502b",
+		"name": "Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38472064"
+	},
+	"item": [
+		{
+			"name": "Space Ryder",
+			"item": [
+				{
+					"name": "Trip",
+					"item": [
+						{
+							"name": "REST",
+							"item": [
+								{
+									"name": "Get All",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/trips",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"trips"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1",
+													"disabled": true
+												},
+												{
+													"key": "limit",
+													"value": "10",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/trips/646493af-230a-4164-a9ac-aec87bc647a1",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"trips",
+												"646493af-230a-4164-a9ac-aec87bc647a1"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Create",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"departureLocationCode\": \"JFK\",\n    \"destinationLocationCode\": \"LAX\",\n    \"departureAt\": \"2025-01-01T00:00:00Z\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/trips",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"trips"
+											]
+										},
+										"description": "Generated from cURL: curl -X 'POST' \\\n  'http://localhost:3000/trips' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '  {\n    \"departureLocationCode\": \"JFK\",\n    \"destinationLocationCode\": \"LAX\",\n    \"departureAt\": \"2025-01-01T00:00:00Z\"\n  }'"
+									},
+									"response": []
+								},
+								{
+									"name": "Cancel",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/trips/4c5f6247-05c6-407c-9ab4-a2b4c9d98851",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"trips",
+												"4c5f6247-05c6-407c-9ab4-a2b4c9d98851"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GRAPHQL",
+							"item": [
+								{
+									"name": "Get All",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query {\n  getAllTrips(page: 1, limit: 10) {\n    trips {\n      id\n      departureLocationCode\n      destinationLocationCode\n      departureAt\n      arrivalAt\n      spaceshipId\n      status\n    }\n    total\n    page\n    limit\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/graphql",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"graphql"
+											]
+										},
+										"description": "Generated from cURL: curl -X POST http://localhost:3000/graphql \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"query\": \"query { getAllTrips(page: 1, limit: 10) { trips { id } total page limit } }\"}'"
+									},
+									"response": []
+								},
+								{
+									"name": "Get By Id",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "query {\n  getTripStatus(tripId: \"646493af-230a-4164-a9ac-aec87bc647a1\") {\n    id\n    departureLocationCode\n    destinationLocationCode\n    departureAt\n    arrivalAt\n    spaceshipId\n    status\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/graphql",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"graphql"
+											]
+										},
+										"description": "Generated from cURL: curl -X POST http://localhost:3000/graphql \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"query\": \"query { getAllTrips(page: 1, limit: 10) { trips { id } total page limit } }\"}'"
+									},
+									"response": []
+								},
+								{
+									"name": "Create",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation {\n  requestTrip(\n    input: {\n      departureLocationCode: \"JFK\"\n      destinationLocationCode: \"LAX\"\n      departureAt: \"2025-01-01T00:00:00Z\"\n    }\n  ) {\n    message\n    jobId\n    statusCode\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/graphql",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"graphql"
+											]
+										},
+										"description": "Generated from cURL: curl -X POST http://localhost:3000/graphql \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"query\": \"query { getAllTrips(page: 1, limit: 10) { trips { id } total page limit } }\"}'"
+									},
+									"response": []
+								},
+								{
+									"name": "Cancel",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "graphql",
+											"graphql": {
+												"query": "mutation {\n  cancelTrip(tripId: \"646493af-230a-4164-a9ac-aec87bc647a1\") {\n    message\n    jobId\n    statusCode\n  }\n}\n",
+												"variables": ""
+											}
+										},
+										"url": {
+											"raw": "{{SPACE_RYDER_HOST}}/graphql",
+											"host": [
+												"{{SPACE_RYDER_HOST}}"
+											],
+											"path": [
+												"graphql"
+											]
+										},
+										"description": "Generated from cURL: curl -X POST http://localhost:3000/graphql \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"query\": \"query { getAllTrips(page: 1, limit: 10) { trips { id } total page limit } }\"}'"
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
