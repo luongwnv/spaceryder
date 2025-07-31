@@ -72,7 +72,7 @@ export class TripService {
             status: 'SCHEDULED' as Trip['status'],
         });
         const savedTrip = await this.tripRepository.save(trip);
-        this.logger.log(`Trip saved: ${JSON.stringify(savedTrip)}`);
+        this.tripGateway.notifyTripStatus(savedTrip);
         return savedTrip;
     }
 

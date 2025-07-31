@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpaceRyder Socket.IO Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #status {
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        #log {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <!-- Include Socket.IO client -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+
+<body>
+    <h1>SpaceRyder Socket.IO Test</h1>
+    <div id="status">Socket.IO Status: Disconnected</div>
+    <button onclick="triggerTripRequest()">Trigger Trip Request</button>
+    <button onclick="triggerCancelTrip()">Cancel Trip</button>
+    <h2>Trip Updates</h2>
+    <table id="trips-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Departure</th>
+                <th>Destination</th>
+                <th>Departure At</th>
+                <th>Arrival At</th>
+                <th>Spaceship ID</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="trips-body"></tbody>
+    </table>
+    <h2>Socket.IO Log</h2>
+    <div id="log"></div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
+        const tripsBody = document.getElementById('trips-body');
+
+        function logMessage(message) {
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(logEntry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function connectSocketIO() {
+            const socket = io('http://localhost:3000', {
+                transports: ['websocket', 'polling'],
+            });
+
+            // Connection events
+            socket.on('connect', () => {
+                statusDiv.textContent = 'Socket.IO Status: Connected';
+                statusDiv.style.color = 'green';
+                logMessage('Connected to Socket.IO server');
+
+                // Subscribe to trip updates
+                socket.emit('subscribeToTrips', {}, (response) => {
+                    logMessage(`Subscription response: ${JSON.stringify(response)}`);
+                });
+            });
+
+            socket.on('disconnect', () => {
+                statusDiv.textContent = 'Socket.IO Status: Disconnected';
+                statusDiv.style.color = 'red';
+                logMessage('Disconnected from Socket.IO server');
+            });
+
+            socket.on('connect_error', (error) => {
+                logMessage(`Connection error: ${error.message}`);
+            });
+
+            // Trip update events
+            socket.on('tripStatusUpdated', (data) => {
+                logMessage(`Received trip update: ${JSON.stringify(data)}`);
+                if (data && data.trip) {
+                    addTripToTable(data.trip);
+                }
+            });
+
+            return socket;
+        }
+
+        const socket = connectSocketIO();
+
+        function addTripToTable(trip) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${trip.id}</td>
+                <td>${trip.departureLocationCode}</td>
+                <td>${trip.destinationLocationCode}</td>
+                <td>${new Date(trip.departureAt).toLocaleString()}</td>
+                <td>${new Date(trip.arrivalAt).toLocaleString()}</td>
+                <td>${trip.spaceshipId}</td>
+                <td>${trip.status}</td>
+            `;
+            tripsBody.prepend(row);
+        }
+
+        async function triggerTripRequest() {
+            const query = `
+                mutation {
+                requestTrip(input: {
+                    departureLocationCode: "JFK"
+                    destinationLocationCode: "LAX"
+                    departureAt: "2025-01-01T00:00:00Z"
+                }) {
+                    message
+                    jobId
+                    statusCode
+                }
+                }
+            `;
+            try {
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query }),
+                });
+                const result = await response.json();
+                logMessage(`GraphQL response: ${JSON.stringify(result)}`);
+            } catch (error) {
+                logMessage(`Error sending GraphQL request: ${error.message}`);
+            }
+        }
+
+        async function triggerCancelTrip() {
+            const query = `
+                mutation {
+                cancelTrip(tripId: "68006127-7132-4711-809c-05824146797b") {
+                    message
+                    jobId
+                    statusCode
+                }
+                }
+            `;
+            try {
+                const response = await fetch('http://localhost:3000/graphql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query }),
+                });
+                const result = await response.json();
+                logMessage(`GraphQL response: ${JSON.stringify(result)}`);
+            } catch (error) {
+                logMessage(`Error sending GraphQL cancel request: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+
+</html>

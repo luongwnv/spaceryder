@@ -82,6 +82,7 @@ SpaceRyder is a backend application for intercity space travel booking, built wi
 * **GraphQL Playground** : `http://localhost:3000/graphql`
 * **Swagger API Docs** : `http://localhost:3000/api/docs`
 * **Bull Board** : `http://localhost:3000/admin/queues`
+* **WebSocket Test Page** : `http://localhost:3000/test-websocket.html`
 
 1. **Check logs** :
    Ensure the following logs appear:
@@ -133,6 +134,22 @@ Access **GraphQL Playground** at `http://localhost:3000/graphql` to test queries
        total
        page
        limit
+     }
+   }
+```
+
+1. **Get Trip Status** :
+
+```graphql
+   query {
+     getTripStatus(tripId: "646493af-230a-4164-a9ac-aec87bc647a1") {
+       id
+       departureLocationCode
+       destinationLocationCode
+       departureAt
+       arrivalAt
+       spaceshipId
+       status
      }
    }
 ```
@@ -190,6 +207,24 @@ Access **GraphQL Playground** at `http://localhost:3000/graphql` to test queries
   }
 ```
 
+* **getTripStatus** :
+
+```json
+  {
+    "data": {
+      "getTripStatus": {
+        "id": "uuid-123",
+        "departureLocationCode": "JFK",
+        "destinationLocationCode": "LAX",
+        "departureAt": "2025-01-01T00:00:00.000Z",
+        "arrivalAt": "2025-01-01T03:00:00.000Z",
+        "spaceshipId": "SS-001",
+        "status": "SCHEDULED"
+      }
+    }
+  }
+```
+
 * **cancelTrip** :
 
 ```json
@@ -203,6 +238,14 @@ Access **GraphQL Playground** at `http://localhost:3000/graphql` to test queries
     }
   }
 ```
+
+## Testing WebSocket Updates
+
+Access the WebSocket test page at `http://localhost:3000/test-websocket.html` to verify real-time trip status updates.
+
+1. **Connect to WebSocket** : Open the test page and verify the connection status.
+2. **Subscribe to Trip Updates** : Enter a trip ID to subscribe to status changes.
+3. **Test Updates** : Make changes to trip status using REST or GraphQL APIs and observe real-time updates in the WebSocket test interface.
 
 ## Testing REST APIs
 
@@ -225,7 +268,13 @@ Use tools like Postman or `curl` to test REST endpoints.
 1. **Get Trip Status** :
 
 ```bash
-   curl http://localhost:3000/trips/uuid-123/status
+   curl http://localhost:3000/trips/uuid-123
+```
+
+1. **Cancel a Trip** :
+
+```bash
+   curl -X POST http://localhost:3000/trips/646493af-230a-4164-a9ac-aec87bc647a1
 ```
 
 ## Database and Queue Monitoring

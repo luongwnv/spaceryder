@@ -2,13 +2,12 @@ import {
     BadRequestException,
     Body,
     Controller,
-    Delete,
     Get,
     HttpCode,
     Logger,
     Param,
     Post,
-    Query,
+    Query
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateTripInput } from './dto/create-trip.input';
@@ -45,7 +44,7 @@ export class TripController {
         return this.tripService.requestTripAsync(input);
     }
 
-    @Delete(':tripId')
+    @Post(':tripId')
     @HttpCode(200)
     @ApiOperation({ summary: 'Cancel a trip' })
     @ApiParam({ name: 'tripId', description: 'Unique ID of the trip' })

@@ -23,6 +23,6 @@ import { TripService } from './trip.service';
     ],
     providers: [TripResolver, TripService, TripGateway, TripQueueProcessor],
     controllers: [TripController],
-    exports: [TripService],
+    exports: [TripService, TripGateway],
 })
 export class TripModule {}
